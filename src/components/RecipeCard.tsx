@@ -1,42 +1,36 @@
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/lib/ui/Card';
 import { Badge } from '@/lib/ui/Badge';
-import { Button } from '@/lib/ui/Button';
-import { ChefHat, ArrowRight } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { ListChecks } from 'lucide-react';
 import type { Recipe } from '@/lib/recipes';
 
-export function RecipeCard({ recipe }: { recipe: Recipe }) {
-  const navigate = useNavigate();
+export function RecipeCard({ recipe, onClick }: { recipe: Recipe; onClick: () => void }) {
   return (
-    <Card className="flex h-full flex-col transition-all duration-150 ease-out hover:shadow-elev-2">
+    <Card
+      onClick={onClick}
+      className="cursor-pointer transition-all duration-150 ease-out hover:shadow-elev-2 hover:-translate-y-0.5"
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') onClick();
+      }}
+    >
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <ChefHat size={18} className="text-muted-foreground" />
-          {recipe.title}
-        </CardTitle>
+        <CardTitle className="line-clamp-2">{recipe.title}</CardTitle>
       </CardHeader>
-      <CardContent className="flex-1 space-y-3">
+      <CardContent className="space-y-3">
         <div className="flex flex-wrap gap-2">
           {recipe.tags.length === 0 ? (
             <span className="text-small text-muted-foreground">No tags</span>
           ) : (
-            recipe.tags.map((tag) => (
-              <Badge key={tag} variant="outline">
-                {tag}
-              </Badge>
-            ))
+            recipe.tags.map((tag) => <Badge key={tag} variant="outline">{tag}</Badge>)
           )}
         </div>
-        <p className="text-small text-muted-foreground">
-          {recipe.ingredients.length} ingredient{recipe.ingredients.length === 1 ? '' : 's'} ·{' '}
-          {recipe.steps.length} step{recipe.steps.length === 1 ? '' : 's'}
-        </p>
       </CardContent>
       <CardFooter>
-        <Button variant="ghost" size="sm" onClick={() => navigate(`/recipes/${recipe.id}`)}>
-          View recipe
-          <ArrowRight size={16} />
-        </Button>
+        <span className="inline-flex items-center gap-1.5 text-small text-muted-foreground">
+          <ListChecks size={14} />
+          {recipe.ingredients.length} ingredient{recipe.ingredients.length === 1 ? '' : 's'}
+        </span>
       </CardFooter>
     </Card>
   );

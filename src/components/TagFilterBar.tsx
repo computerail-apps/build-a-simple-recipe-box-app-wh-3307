@@ -1,39 +1,38 @@
-import { Button } from '@/lib/ui/Button';
-import { Tag } from 'lucide-react';
+import { Badge } from '@/lib/ui/Badge';
+import { cn } from '@/lib/cn';
 
-interface TagFilterBarProps {
+export function TagFilterBar({
+  tags,
+  activeTag,
+  onSelect,
+}: {
   tags: string[];
-  selected: string[];
-  onToggle: (tag: string) => void;
-  onClear: () => void;
-}
-
-export function TagFilterBar({ tags, selected, onToggle, onClear }: TagFilterBarProps) {
+  activeTag: string | null;
+  onSelect: (tag: string | null) => void;
+}) {
   if (tags.length === 0) return null;
+
   return (
-    <div className="flex flex-wrap items-center gap-2">
-      <span className="inline-flex items-center gap-1 text-small text-muted-foreground">
-        <Tag size={14} />
-        Filter:
-      </span>
-      {tags.map((tag) => {
-        const active = selected.includes(tag);
-        return (
-          <Button
-            key={tag}
-            size="sm"
-            variant={active ? 'secondary' : 'outline'}
-            onClick={() => onToggle(tag)}
-          >
-            {tag}
-          </Button>
-        );
-      })}
-      {selected.length > 0 && (
-        <Button size="sm" variant="ghost" onClick={onClear}>
-          Clear
-        </Button>
-      )}
+    <div className="flex flex-wrap gap-2">
+      <button
+        type="button"
+        onClick={() => onSelect(null)}
+        className={cn(
+          'transition-colors duration-150 ease-out',
+        )}
+      >
+        <Badge variant={activeTag === null ? 'default' : 'outline'}>All</Badge>
+      </button>
+      {tags.map((tag) => (
+        <button
+          key={tag}
+          type="button"
+          onClick={() => onSelect(tag)}
+          className="transition-colors duration-150 ease-out"
+        >
+          <Badge variant={activeTag === tag ? 'default' : 'outline'}>{tag}</Badge>
+        </button>
+      ))}
     </div>
   );
 }
